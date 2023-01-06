@@ -1,6 +1,7 @@
+import { SafeAreaView } from "react-native-safe-area-context";
 import styled from "styled-components/native";
 
-export const Container = styled.View`
+export const Container = styled(SafeAreaView)`
     flex: 1;
     background-color: ${({ theme }) => theme.COLORS.GRAY_700};
     padding: 24px;
@@ -13,10 +14,13 @@ export const Header = styled.View`
     margin-bottom: 40px;
 `;
 
-export const StatisticsCard = styled.View`
+interface StatisticsCardProps {
+    aboveReference: boolean;
+}
+export const StatisticsCard = styled.View<StatisticsCardProps>`
     height: 100px;
     padding: 10px;
-    background-color: ${({ theme }) => theme.COLORS.GREEN_LIGHT};
+    background-color: ${({ theme, aboveReference }) => aboveReference ? theme.COLORS.GREEN_LIGHT : theme.COLORS.RED_LIGHT};
     margin-bottom: 40px;
 `;
 
@@ -73,4 +77,18 @@ export const NewMealButtonText = styled.Text`
     color: ${({ theme }) => theme.COLORS.WHITE};
 
     margin-left: 10px;
+`;
+
+export const ListEmpty = styled.View` 
+    flex: 1;
+    justify-content: center;
+    align-items: center; 
+`;
+
+export const ListEmptyMessage = styled.Text`
+    text-align: center;
+
+    font-family: ${({ theme }) => theme.FONT_FAMILY.REGULAR};
+    font-size: ${({ theme }) => theme.FONT_SIZE.BODY_M}px;
+    color: ${({ theme }) => theme.COLORS.GRAY_100};
 `;

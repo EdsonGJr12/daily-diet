@@ -70,5 +70,52 @@ export const DateValue = styled.Text`
 `;
 
 export const Buttons = styled.View`
+    height: 110px;
 
+    justify-content: space-between;
+`;
+
+export const ModalContainer = styled.View`
+    flex: 1; 
+    justify-content: center;
+    align-items: center;
+`;
+
+export const Background = styled.View`
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    background-color: ${({ theme }) => theme.COLORS.GRAY_100}; 
+    opacity: 0.5;
+`;
+
+export const ModalContent = styled.View`
+    height: 170px;
+    width: 80%;
+    background-color: ${({ theme }) => theme.COLORS.WHITE};
+    padding: 20px;
+    border-radius: 8px;
+
+    justify-content: space-between;
+`;
+
+export const ModalTitle = styled.Text`
+    font-family: ${({ theme }) => theme.FONT_FAMILY.BOLD};
+    font-size: ${({ theme }) => theme.FONT_SIZE.TITLE_S}px;
+    color: ${({ theme }) => theme.COLORS.GRAY_200};
+    text-align: center;
+`;
+
+export const ModalButtons = styled.View`
+    flex-direction: row;
+    justify-content: space-between;
+
+    width: 100%;
+`;
+
+export const ModalButton = styled.View`
+    width: 48%;
 `;

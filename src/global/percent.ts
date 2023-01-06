@@ -1,0 +1,1 @@
+export const PERCENT_REFERENCE = 50;

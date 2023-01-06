@@ -1,4 +1,5 @@
 
+import { useState } from "react";
 import { useTheme } from "styled-components/native";
 import Back from "../../assets/back.svg"
 import { DietOption } from "../../components/DietOption";
@@ -25,6 +26,13 @@ export function NewMeal() {
 
     const theme = useTheme();
 
+    const [name, setName] = useState("");
+    const [description, setDescription] = useState("");
+    const [data, setDate] = useState("");
+    const [hour, setHour] = useState("");
+
+    const [onDietOption, setOnDietOption] = useState<"PENDING" | "YES" | "NO">("PENDING");
+
     return (
         <Container>
 
@@ -46,12 +54,16 @@ export function NewMeal() {
                     <FormControl>
                         <Input
                             label="Nome"
+                            onChangeText={setName}
+                            value={name}
                         />
                     </FormControl>
 
                     <FormControl>
                         <Input
                             label="Descrição"
+                            onChangeText={setDescription}
+                            value={description}
                         />
                     </FormControl>
 
@@ -60,12 +72,16 @@ export function NewMeal() {
                             <InputElement>
                                 <Input
                                     label="Data"
+                                    onChangeText={setDate}
+                                    value={data}
                                 />
                             </InputElement>
 
                             <InputElement>
                                 <Input
                                     label="Hora"
+                                    onChangeText={setHour}
+                                    value={hour}
                                 />
                             </InputElement>
                         </DateContainer>
@@ -77,14 +93,16 @@ export function NewMeal() {
                             <InputElement>
                                 <DietOption
                                     onDiet
-                                    selected
+                                    selected={onDietOption === "YES"}
+                                    onPress={() => setOnDietOption("YES")}
                                 />
                             </InputElement>
 
                             <InputElement>
                                 <DietOption
                                     onDiet={false}
-                                    selected={false}
+                                    selected={onDietOption === "NO"}
+                                    onPress={() => setOnDietOption("NO")}
                                 />
                             </InputElement>
                         </DietOptions>

@@ -1,14 +1,20 @@
+import { TouchableOpacityProps } from "react-native";
+
 import { Circle, Container, Title } from "./styles";
 
 export interface OnDietProps {
     onDiet: boolean;
 }
-interface DietOptionProps extends OnDietProps {
+export interface DietOptionProps extends TouchableOpacityProps, OnDietProps {
     selected: boolean;
 }
-export function DietOption({ onDiet, selected }: DietOptionProps) {
+export function DietOption({ onDiet, selected, ...rest }: DietOptionProps) {
     return (
-        <Container>
+        <Container
+            onDiet={onDiet}
+            selected={selected}
+            {...rest}
+        >
             <Circle onDiet={onDiet} />
             <Title>
                 {onDiet ? "Sim" : "Não"}

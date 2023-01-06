@@ -1,7 +1,8 @@
-import styled from "styled-components/native";
-import { OnDietProps } from ".";
+import styled, { css } from "styled-components/native";
+import { DietOptionProps, OnDietProps } from ".";
 
-export const Container = styled.TouchableOpacity`
+
+export const Container = styled.TouchableOpacity<DietOptionProps>`
     width: 100%;
     height: 50px;
 
@@ -10,6 +11,18 @@ export const Container = styled.TouchableOpacity`
     align-items: center;
 
     background-color: ${({ theme }) => theme.COLORS.GRAY_600};
+
+    ${({ theme, onDiet, selected }) => onDiet && selected && css`
+        border: 1px solid ${theme.COLORS.GREEN_DARK};
+        background-color: ${theme.COLORS.GREEN_LIGHT};
+        border-radius: 6px;
+    `};
+
+    ${({ theme, onDiet, selected }) => !onDiet && selected && css`
+        border: 1px solid ${theme.COLORS.RED_DARK};
+        background-color: ${theme.COLORS.RED_LIGHT};
+        border-radius: 6px;
+    `};
 `;
 
 export const Circle = styled.View<OnDietProps>`

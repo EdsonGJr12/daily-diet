@@ -3,9 +3,9 @@ import { Container, Diet, Hour, Name, NameContainer, Divider, HourContainer } fr
 interface MealItemProps {
     hour: string;
     name: string;
-    diet: boolean;
+    onDiet: boolean;
 }
-export function MealItem({ hour, name, diet }: MealItemProps) {
+export function MealItem({ hour, name, onDiet }: MealItemProps) {
     return (
         <Container>
             <HourContainer>
@@ -20,7 +20,7 @@ export function MealItem({ hour, name, diet }: MealItemProps) {
                     {name}
                 </Name>
 
-                <Diet diet={diet} />
+                <Diet onDiet={onDiet} />
             </NameContainer>
         </Container>
     )

@@ -47,12 +47,12 @@ export const Name = styled.Text`
 `;
 
 interface DietProps {
-    diet: boolean;
+    onDiet: boolean;
 }
 export const Diet = styled.Text<DietProps>`
     width: 14px;
     height: 14px;
     border-radius: 7px;
 
-    background-color: ${({ theme, diet }) => diet ? theme.COLORS.GREEN_MID : theme.COLORS.RED_MID};
+    background-color: ${({ theme, onDiet }) => onDiet ? theme.COLORS.GREEN_MID : theme.COLORS.RED_MID};
 `;
