@@ -1,5 +1,6 @@
 {
   "expo": {
+    "jsEngine": "hermes",
     "name": "daily-diet",
     "slug": "daily-diet",
     "version": "1.0.0",

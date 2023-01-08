@@ -1,16 +1,21 @@
+import { format } from "date-fns";
+
+import ptBR from "date-fns/locale/pt-BR"
+
 import { Container, Diet, Hour, Name, NameContainer, Divider, HourContainer } from "./styles";
 
 interface MealItemProps {
-    hour: string;
+    date: Date;
     name: string;
     onDiet: boolean;
 }
-export function MealItem({ hour, name, onDiet }: MealItemProps) {
+export function MealItem({ date, name, onDiet }: MealItemProps) {
+
     return (
         <Container>
             <HourContainer>
                 <Hour>
-                    {hour}
+                    {format(date, 'HH:mm:ss')}
                 </Hour>
                 <Divider />
             </HourContainer>

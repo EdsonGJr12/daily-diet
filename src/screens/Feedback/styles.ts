@@ -5,13 +5,18 @@ export const Container = styled.View`
     justify-content: center;
     align-items: center;
 
+    background-color: ${({ theme }) => theme.COLORS.GRAY_700};;
+
     padding: 22px;
 `;
 
-export const Title = styled.Text`
+interface TitleProps {
+    onDiet: boolean;
+}
+export const Title = styled.Text<TitleProps>`
     font-family: ${({ theme }) => theme.FONT_FAMILY.BOLD};
     font-size: ${({ theme }) => theme.FONT_SIZE.TITLE_M}px;
-    color: ${({ theme }) => theme.COLORS.GREEN_DARK};
+    color: ${({ theme, onDiet }) => onDiet ? theme.COLORS.GREEN_DARK : theme.COLORS.RED_DARK};
 
     margin-bottom: 10px;
 `;

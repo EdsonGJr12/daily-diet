@@ -1,13 +1,17 @@
 import styled from "styled-components/native";
 
-export const Container = styled.View`
+interface ContainerProps {
+    aboveReference: boolean;
+}
+export const Container = styled.View<ContainerProps>`
     flex: 1;
-    background-color: ${({ theme }) => theme.COLORS.GREEN_LIGHT};
+    background-color: ${({ theme, aboveReference }) => aboveReference ? theme.COLORS.GREEN_LIGHT : theme.COLORS.RED_LIGHT};
 `;
 
 export const BackContainer = styled.View`
     margin-left: 25px;
 `;
+
 
 export const Header = styled.View`
     width: 100%;

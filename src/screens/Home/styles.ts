@@ -17,7 +17,7 @@ export const Header = styled.View`
 interface StatisticsCardProps {
     aboveReference: boolean;
 }
-export const StatisticsCard = styled.View<StatisticsCardProps>`
+export const StatisticsCard = styled.TouchableOpacity<StatisticsCardProps>`
     height: 100px;
     padding: 10px;
     background-color: ${({ theme, aboveReference }) => aboveReference ? theme.COLORS.GREEN_LIGHT : theme.COLORS.RED_LIGHT};

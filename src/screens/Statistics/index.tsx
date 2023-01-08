@@ -1,7 +1,13 @@
 
+import { useEffect, useState } from "react";
+import { StatusBar } from "react-native";
 import { useTheme } from "styled-components/native";
 import Back from "../../assets/back.svg"
 import { StatisticCard } from "../../components/StatisticCard";
+import { maskPercent } from "../../global/maskPercent";
+import { PERCENT_REFERENCE } from "../../global/percent";
+import { getAllMeals } from "../../storage/meal/getAllMeals";
+import { MealDTO } from "../../storage/meal/mealDTO";
 
 import {
     BackContainer,
@@ -18,19 +24,88 @@ import {
 
 export function Statistics() {
 
+    const [meals, setMeals] = useState<MealDTO[]>([]);
+
+    const totalOfMeals = meals.length;
+    const totalOnDietMeals = meals.filter(meal => meal.onDiet).length;
+    const totalOffDietMeals = meals.filter(meal => !meal.onDiet).length;
+    const percentageOfMealsInDiet = meals.length !== 0 ? (totalOnDietMeals / totalOfMeals) * 100 : 0;
+    const aboveReference = percentageOfMealsInDiet > PERCENT_REFERENCE;
+
+    const bestSequenceOnDiet = getBestSequence();
+
     const theme = useTheme();
 
+    function getBestSequence() {
+        let bestSequence = 0;
+
+        let currentCounter = 0;
+
+        for (let indexMeal = 0; indexMeal < meals.length; indexMeal++) {
+
+            const currentMeal = meals[indexMeal];
+            const nextMeal = meals[indexMeal + 1];
+
+            if (!currentMeal.onDiet) {
+                currentCounter = 0;
+                continue;
+            }
+
+            if (currentMeal.onDiet && !nextMeal) {
+                currentCounter += 1;
+                if (currentCounter > bestSequence) {
+                    bestSequence = currentCounter;
+                }
+                continue;
+            }
+
+            if (currentMeal.onDiet && nextMeal.onDiet) {
+                currentCounter += 1;
+                if (currentCounter > bestSequence) {
+                    bestSequence = currentCounter;
+                }
+                continue;
+            }
+
+            if (currentMeal.onDiet && !nextMeal.onDiet) {
+                currentCounter += 1;
+                if (currentCounter > bestSequence) {
+                    bestSequence = currentCounter;
+                }
+                currentCounter = 0;
+                continue;
+            }
+        }
+
+        return bestSequence;
+    }
+
+    useEffect(() => {
+        async function loadMeals() {
+            const meals = await getAllMeals();
+
+            setMeals(meals);
+        }
+        loadMeals();
+    }, []);
+
     return (
-        <Container>
+        <Container aboveReference={aboveReference}>
+
+            <StatusBar
+                barStyle="dark-content"
+                backgroundColor="transparent"
+                translucent
+            />
 
             <Header>
                 <BackContainer>
-                    <Back fill={theme.COLORS.GREEN_DARK} />
+                    <Back fill={aboveReference ? theme.COLORS.GREEN_DARK : theme.COLORS.RED_DARK} />
                 </BackContainer>
 
                 <PercentContainer>
                     <Percent>
-                        90,86%
+                        {maskPercent(percentageOfMealsInDiet)}
                     </Percent>
 
                     <PercentText>
@@ -46,13 +121,13 @@ export function Statistics() {
 
                 <StatisticCard
                     type="info"
-                    total={22}
+                    total={bestSequenceOnDiet}
                     detail="melhor sequência de pratos dentro da dieta"
                 />
 
                 <StatisticCard
                     type="info"
-                    total={109}
+                    total={totalOfMeals}
                     detail="refeições registradas"
                 />
 
@@ -60,7 +135,7 @@ export function Statistics() {
                     <StatisticCardElement>
                         <StatisticCard
                             type="success"
-                            total={99}
+                            total={totalOnDietMeals}
                             detail="refeições dentro da dieta"
                         />
                     </StatisticCardElement>
@@ -68,7 +143,7 @@ export function Statistics() {
                     <StatisticCardElement>
                         <StatisticCard
                             type="danger"
-                            total={10}
+                            total={totalOffDietMeals}
                             detail="refeições fora da dieta"
                         />
                     </StatisticCardElement>

@@ -1,6 +1,6 @@
 
-import { useState } from "react";
-import { SectionList } from "react-native";
+import { useCallback, useEffect, useState } from "react";
+import { SectionList, StatusBar } from "react-native";
 
 import Logo from "../../assets/logo.svg";
 import Profile from "../../assets/profile.svg";
@@ -10,7 +10,7 @@ import Add from "../../assets/add.svg";
 import { MealHeader } from "../../components/MealHeader";
 import { MealItem } from "../../components/MealItem";
 
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
 import {
     Container,
@@ -29,6 +29,10 @@ import {
 } from "./styles";
 import { PERCENT_REFERENCE } from "../../global/percent";
 import { maskPercent } from "../../global/maskPercent";
+import { getAllMeals } from "../../storage/meal/getAllMeals";
+import { MealDTO } from "../../storage/meal/mealDTO";
+import { format } from "date-fns";
+import theme from "../../theme";
 
 interface MealProps {
     hour: string;
@@ -36,91 +40,12 @@ interface MealProps {
     onDiet: boolean;
 }
 
-const DATA = [
-    {
-        title: "12.08.22",
-        data: [
-            {
-                hour: "20:00",
-                name: "X-tudo",
-                onDiet: false
-            },
-            {
-                hour: "16:00",
-                name: "Whey protein com leite",
-                onDiet: false
-            },
-            {
-                hour: "12:30",
-                name: "Salada cesar com frango ao molho madeira",
-                onDiet: false
-            },
-            {
-                hour: "09:30",
-                name: "Vitamina de banan com whey protein",
-                onDiet: false
-            }
-        ]
-    },
-    {
-        title: "11.08.22",
-        data: [
-            {
-                hour: "20:00",
-                name: "X-tudo",
-                onDiet: false
-            },
-            {
-                hour: "16:00",
-                name: "Whey protein com leite",
-                onDiet: true
-            },
-            {
-                hour: "12:30",
-                name: "Salada cesar com frango ao molho madeira",
-                onDiet: true
-            },
-            {
-                hour: "09:30",
-                name: "Vitamina de banan com whey protein",
-                onDiet: true
-            }
-        ]
-    },
-    {
-        title: "09.08.22",
-        data: [
-            {
-                hour: "20:00",
-                name: "X-tudo",
-                onDiet: false
-            },
-            {
-                hour: "16:00",
-                name: "Whey protein com leite",
-                onDiet: false
-            },
-            {
-                hour: "12:30",
-                name: "Salada cesar com frango ao molho madeira",
-                onDiet: false
-            },
-            {
-                hour: "09:30",
-                name: "Vitamina de banana com whey protein",
-                onDiet: false
-            }
-        ]
-    }
-];
-
 export function Home() {
 
-    const [meals, setMeals] = useState([]);
+    const [meals, setMeals] = useState<MealDTO[]>([]);
+    const mealsGrouped = groupByDate(meals);
 
-    const allMeals = meals.map(meal => meal.data)
-        .reduce((all, element) => [...all, ...element], []);
-    const percentageOfMealsInDiet = allMeals.length !== 0 ? (allMeals.filter(meal => meal.onDiet).length / allMeals.length) * 100 : 0;
+    const percentageOfMealsInDiet = meals.length !== 0 ? (meals.filter(meal => meal.onDiet).length / meals.length) * 100 : 0;
     const aboveReference = percentageOfMealsInDiet > PERCENT_REFERENCE;
 
     const navigation = useNavigation();
@@ -129,18 +54,58 @@ export function Home() {
         navigation.navigate("NewMeal");
     }
 
-    console.log(percentageOfMealsInDiet)
+    function groupByDate(meals: MealDTO[]) {
+        if (meals.length === 0) {
+            return [];
+        } else {
+            const allDates = new Set<string>();
+            meals.forEach(meal => allDates.add(format(meal.date, 'dd.MM.yy')));
+
+            const dates = Array.from(allDates);
+
+            const mealsGrouped = dates.map(date => {
+                return {
+                    title: date,
+                    data: meals.filter(meal => format(meal.date, 'dd.MM.yy') === date)
+                }
+            });
+
+            return mealsGrouped;
+        }
+    }
+
+    function handleStatistics() {
+        navigation.navigate("Statistics");
+    }
+
+    useFocusEffect(
+        useCallback(() => {
+            async function loadMeals() {
+                const meals = await getAllMeals();
+
+                setMeals(meals);
+            }
+            loadMeals();
+        }, [])
+    );
 
     return (
         <Container>
+
+            <StatusBar
+                barStyle="dark-content"
+                backgroundColor="transparent"
+                translucent
+            />
+
             <Header>
                 <Logo />
                 <Profile />
             </Header>
 
-            <StatisticsCard aboveReference={aboveReference}>
+            <StatisticsCard aboveReference={aboveReference} onPress={handleStatistics}>
                 <OpenContainer>
-                    <Open />
+                    <Open fill={aboveReference ? theme.COLORS.GREEN_DARK : theme.COLORS.RED_DARK} />
                 </OpenContainer>
 
                 <StatisticContainer>
@@ -168,19 +133,19 @@ export function Home() {
             </NewMeal>
 
             <SectionList
-                sections={meals}
+                sections={mealsGrouped}
                 keyExtractor={(_, index) => String(index)}
                 renderSectionHeader={({ section: { title } }) => (
                     <MealHeader title={title} />
                 )}
                 renderItem={({ item }) => (
                     <MealItem
-                        hour={item.hour}
+                        date={item.date}
                         name={item.name}
                         onDiet={item.onDiet}
                     />
                 )}
-                contentContainerStyle={meals.length == 0 && { flex: 1 }}
+                contentContainerStyle={mealsGrouped.length == 0 && { flex: 1 }}
                 ListEmptyComponent={
                     <ListEmpty>
                         <ListEmptyMessage>

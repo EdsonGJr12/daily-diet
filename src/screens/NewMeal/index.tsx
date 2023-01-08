@@ -1,12 +1,16 @@
 
 import { useState } from "react";
 import { useTheme } from "styled-components/native";
+
 import Back from "../../assets/back.svg"
 import { DietOption } from "../../components/DietOption";
 import { Button } from "../../components/Form/Button";
 import { Input } from "../../components/Form/Input";
 import { InputLabel } from "../../components/Form/InputLabel";
-import { StatisticCard } from "../../components/StatisticCard";
+
+import { TextInputMask } from 'react-native-masked-text'
+
+import { subHours } from "date-fns";
 
 import {
     BackContainer,
@@ -21,6 +25,8 @@ import {
     Title,
     TitleContainer
 } from "./styles";
+import { createNewMeal } from "../../storage/meal/createNewMeal";
+import { useNavigation } from "@react-navigation/native";
 
 export function NewMeal() {
 
@@ -28,10 +34,34 @@ export function NewMeal() {
 
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
-    const [data, setDate] = useState("");
+    const [date, setDate] = useState("");
     const [hour, setHour] = useState("");
 
     const [onDietOption, setOnDietOption] = useState<"PENDING" | "YES" | "NO">("PENDING");
+
+    const navigation = useNavigation();
+
+    async function handleNewMeal() {
+
+        const dayMonthYear = date.split("/");
+        const hourMinute = hour.split(":");
+
+        const dateFormat = `${dayMonthYear[2]}-${dayMonthYear[1]}-${dayMonthYear[0]}T${hourMinute[0]}:${hourMinute[1]}:00-03:00`;
+
+        const mealDateUTC = new Date(dateFormat);
+
+        const newMeal = {
+            name,
+            description,
+            date: mealDateUTC,
+            onDiet: onDietOption == "YES"
+        };
+
+        await createNewMeal(newMeal);
+
+        navigation.navigate("Feedback", { onDiet: newMeal.onDiet });
+
+    }
 
     return (
         <Container>
@@ -64,25 +94,46 @@ export function NewMeal() {
                             label="Descrição"
                             onChangeText={setDescription}
                             value={description}
+                            multiline
+                            numberOfLines={5}
+                            textAlignVertical="top"
+
                         />
                     </FormControl>
 
                     <FormControl>
                         <DateContainer>
                             <InputElement>
-                                <Input
-                                    label="Data"
+                                <TextInputMask
+                                    type={'datetime'}
+                                    options={{
+                                        format: 'DD/MM/YYYY'
+                                    }}
                                     onChangeText={setDate}
-                                    value={data}
+                                    value={date}
+                                    customTextInput={Input}
+                                    customTextInputProps={{
+                                        label: "Data"
+                                    }}
                                 />
+
                             </InputElement>
 
                             <InputElement>
-                                <Input
-                                    label="Hora"
+                                <TextInputMask
+                                    type={'datetime'}
+                                    options={{
+                                        format: 'HH:MM'
+                                    }}
                                     onChangeText={setHour}
                                     value={hour}
+                                    customTextInput={Input}
+                                    customTextInputProps={{
+                                        label: "Hora"
+                                    }}
                                 />
+
+
                             </InputElement>
                         </DateContainer>
                     </FormControl>
@@ -111,6 +162,7 @@ export function NewMeal() {
 
                 <Button
                     title="Cadastrar refeição"
+                    onPress={handleNewMeal}
                 />
 
             </Content>
