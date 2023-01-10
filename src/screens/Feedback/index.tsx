@@ -5,6 +5,7 @@ import FeedbackSuccess from "../../assets/feedback-success.svg";
 import FeedbackWarning from "../../assets/feedback-warning.svg";
 
 import { useNavigation, useRoute } from "@react-navigation/native";
+import { StatusBar } from "react-native";
 
 interface RouteParams {
     onDiet: boolean;
@@ -23,6 +24,13 @@ export function Feedback() {
 
     return (
         <Container>
+
+            <StatusBar
+                barStyle="dark-content"
+                backgroundColor="transparent"
+                translucent
+            />
+
             <Title onDiet={onDiet}>
                 {onDiet ? "Continue assim!" : "Que pena!"}
             </Title>

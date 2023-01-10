@@ -51,7 +51,9 @@ export function Home() {
     const navigation = useNavigation();
 
     function handleNewMeal() {
-        navigation.navigate("NewMeal");
+        navigation.navigate("MealManintenance", {
+            operation: "NEW"
+        });
     }
 
     function groupByDate(meals: MealDTO[]) {
@@ -76,6 +78,10 @@ export function Home() {
 
     function handleStatistics() {
         navigation.navigate("Statistics");
+    }
+
+    function handlePressMeal(name: string) {
+        navigation.navigate("MealDetail", { name });
     }
 
     useFocusEffect(
@@ -143,6 +149,7 @@ export function Home() {
                         date={item.date}
                         name={item.name}
                         onDiet={item.onDiet}
+                        onPress={() => handlePressMeal(item.name)}
                     />
                 )}
                 contentContainerStyle={mealsGrouped.length == 0 && { flex: 1 }}

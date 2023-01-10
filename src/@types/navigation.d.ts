@@ -1,13 +1,18 @@
+import { MealDTO } from "../storage/meal/mealDTO";
+
 export declare global {
     namespace ReactNavigation {
         interface RootParamList {
             Home: undefined;
             Statistics: undefined;
-            NewMeal: undefined;
+            MealManintenance: {
+                operation: "NEW" | "EDIT",
+                mealName?: string;
+            };
             Feedback: {
                 onDiet: boolean;
             };
-            MealDetail: undefined;
+            MealDetail: { name: string };
         }
     }
 }

@@ -1,21 +1,28 @@
 import { format } from "date-fns";
+import { TouchableOpacityProps } from "react-native";
 
-import ptBR from "date-fns/locale/pt-BR"
+import {
+    Container,
+    Diet,
+    Hour,
+    Name,
+    NameContainer,
+    Divider,
+    HourContainer
+} from "./styles";
 
-import { Container, Diet, Hour, Name, NameContainer, Divider, HourContainer } from "./styles";
-
-interface MealItemProps {
+interface MealItemProps extends TouchableOpacityProps {
     date: Date;
     name: string;
     onDiet: boolean;
 }
-export function MealItem({ date, name, onDiet }: MealItemProps) {
+export function MealItem({ date, name, onDiet, ...rest }: MealItemProps) {
 
     return (
-        <Container>
+        <Container {...rest}>
             <HourContainer>
                 <Hour>
-                    {format(date, 'HH:mm:ss')}
+                    {format(date, 'HH:mm')}
                 </Hour>
                 <Divider />
             </HourContainer>

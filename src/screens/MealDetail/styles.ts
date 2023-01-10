@@ -1,11 +1,14 @@
 import styled from "styled-components/native";
 
-export const Container = styled.View`
+interface ContainerProps {
+    onDiet: boolean;
+}
+export const Container = styled.View<ContainerProps>`
     flex: 1;
-    background-color: ${({ theme }) => theme.COLORS.GREEN_LIGHT};
+    background-color: ${({ theme, onDiet }) => onDiet ? theme.COLORS.GREEN_LIGHT : theme.COLORS.RED_LIGHT};
 `;
 
-export const BackContainer = styled.View` 
+export const BackContainer = styled.TouchableOpacity` 
     position: absolute;
     left: 25px;
 `;
